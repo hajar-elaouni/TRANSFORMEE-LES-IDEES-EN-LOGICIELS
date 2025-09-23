@@ -12,10 +12,8 @@ import traceback
 llm=ChatGoogleGenerativeAI(model="gemini-1.5-flash",
                            verbose=True,
                            temperature=0.5,
-                           google_api_key="AIzaSyBTvwLyxeXqwTaqdmhnFyUgzpNDQb1JEDY")
-# AIzaSyBTvwLyxeXqwTaqdmhnFyUgzpNDQb1JEDY
-# AIzaSyD5yMm6QuF68glxXdlrqRzgqtM1UbNk-EI
-# AIzaSyBvh2s2oeFKI7Jj6WxHvjRi55xjDbjsyG0
+                           google_api_key="")
+
 
 
 
@@ -333,4 +331,5 @@ documentation_agent = DocumentationAgent(
     verbose=True,
     llm=llm
 )
+
 
