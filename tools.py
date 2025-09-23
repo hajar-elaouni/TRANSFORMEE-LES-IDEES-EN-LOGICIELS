@@ -131,7 +131,7 @@ class PDFGenerator:
                     if not in_code_block:
                         pdf.ln(5)
 
-            output_file = fr"C:\Users\ALSAKB\Desktop\CrewAI-Projects-SMA-EL AOUNI IFADADEN\pdfs\{project_name}.pdf"
+            output_file = fr"\pdfs\{project_name}.pdf"
             pdf.output(output_file, "F")
             print(f"PDF généré avec succès : {output_file}")
             return output_file
@@ -163,7 +163,7 @@ class WebSearchTool(BaseTool):
             })
             
             headers = {
-                'X-API-KEY': "8f46b5f0d445d0801087380e98965e756667f725",  # Obtenir la clé depuis les variables d'environnement
+                'X-API-KEY': "",  # Obtenir la clé depuis les variables d'environnement
                 'Content-Type': 'application/json'
             }
             
@@ -191,4 +191,5 @@ class WebSearchTool(BaseTool):
         raise NotImplementedError("La recherche web ne supporte pas encore les appels asynchrones")
 
 # Création de l'outil
+
 web_search_tool = WebSearchTool()
