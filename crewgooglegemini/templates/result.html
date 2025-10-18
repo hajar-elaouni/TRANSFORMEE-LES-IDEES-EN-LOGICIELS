@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Code JAVA</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Prism.js pour la coloration syntaxique -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <!-- Mermaid pour les diagrammes -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <!-- Tippy.js pour les tooltips -->
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/light.css"/>
+    
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --success-color: #198754;
+            --info-color: #0dcaf0;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+        }
+
+        body {
+            background-color: var(--light-color);
+            padding: 20px 0;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode {
+            background-color: var(--dark-color);
+            color: var(--light-color);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--info-color));
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(180deg);
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+
+        .requirement-group, .test-group {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.section-subtitle {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.requirement-content, .test-results, .performance-issues {
+    display: grid;
+    gap: 10px;
+}
+
+.requirement-item, .test-result, .warning-item {
+    background-color: var(--light-color);
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.warning-item {
+    background-color: #fff3cd;
+    border-left: 4px solid var(--warning-color);
+}
+
+.test-result {
+    background-color: #e8f5e9;
+    border-left: 4px solid var(--success-color);
+}
+
+.requirement-item i, .test-result i, .warning-item i {
+    color: var(--primary-color);
+    margin-top: 3px;
+}
+
+.warning-item i {
+    color: var(--warning-color);
+}
+
+.test-result i {
+    color: var(--success-color);
+}
+
+
+        .progress-bar-container {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background-color: var(--light-color);
+            transform: translateY(-50%);
+            z-index: 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--info-color));
+            width: 0;
+            transition: width 0.5s ease;
+        }
+
+        .step-badge {
+            position: relative;
+            z-index: 1;
+            padding: 15px 25px;
+            border-radius: 30px;
+            background-color: white;
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .step-badge.active {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(13, 110, 253, 0.2);
+        }
+
+        .step-badge.completed {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .step-badge i {
+            font-size: 1.1rem;
+        }
+
+        .content-section {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .content-section:hover {
+            transform: translateY(-5px);
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Continué dans la prochaine partie... */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .step-container {
+            display: none;
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .planning-container {
+            margin-top: 20px;
+        }
+
+        .planning-container .card {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+            margin-bottom: 20px;
+        }
+
+        .planning-container .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .planning-container .card-header {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+
+        .planning-container .list-group-item {
+            border: none;
+            margin-bottom: 5px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .planning-container h3 {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .error-message {
+            background-color: #dc3545;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .step-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background-color: #e9ecef;
+            color: #6c757d;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .step-badge.active {
+            background-color: #007bff;
+            color: white;
+        }
+
+        /* Nouveaux styles ajoutés */
+        .content-section {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            color: #0d6efd;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #0d6efd;
+        }
+
+        .section-subtitle {
+            color: #495057;
+            font-size: 1.2rem;
+            margin: 1rem 0;
+            font-weight: 500;
+        }
+
+        .requirement-item {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border-left: 4px solid #0d6efd;
+        }
+
+        .code-section {
+            background-color: #272822;
+            color: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+
+        .test-result {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border-left: 4px solid #28a745;
+        }
+
+        .documentation-section {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .download-btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #28a745;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s;
+            margin-top: 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .download-btn:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            color: white;
+            text-decoration: none;
+        }
+
+        .info-box {
+            background-color: #e7f5ff;
+            border-left: 4px solid #0d6efd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+
+        .warning-box {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+
+
+        /* Styles pour l'organisation du contenu */
+.content-container {
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.main-title {
+    color: #2c3e50;
+    font-size: 1.8rem;
+    font-weight: 600;
+    padding: 15px 0;
+    margin: 20px 0;
+    border-bottom: 3px solid #3498db;
+}
+
+.content-block {
+    margin: 20px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #3498db;
+}
+
+.content-title {
+    color: #3498db;
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.content-text {
+    color: #2c3e50;
+    line-height: 1.6;
+    margin: 10px 0;
+    padding: 10px;
+    background: white;
+    border-radius: 6px;
+}
+
+/* Styles spécifiques pour chaque type d'agent */
+.requirements .main-title {
+    border-color: #e74c3c;
+    color: #c0392b;
+}
+
+.planning .main-title {
+    border-color: #2ecc71;
+    color: #27ae60;
+}
+
+.code .main-title {
+    border-color: #9b59b6;
+    color: #8e44ad;
+}
+
+.testing .main-title {
+    border-color: #f1c40f;
+    color: #f39c12;
+}
+
+/* Styles pour les éléments spécifiques */
+.code-block {
+    background: #2c3e50;
+    color: #ecf0f1;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 15px 0;
+    font-family: 'Courier New', monospace;
+}
+
+.method-block {
+    background: #f8f9fa;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 6px;
+    border-left: 4px solid #3498db;
+}
+
+.class-name {
+    color: #2ecc71;
+    font-weight: 600;
+}
+
+.method-name {
+    color: #9b59b6;
+    font-weight: 500;
+}
+
+.parameter {
+    color: #e74c3c;
+}
+
+.return-type {
+    color: #f39c12;
+}
+
+/* Styles pour les tests */
+.content-container {
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.main-title {
+    color: #2c3e50;
+    font-size: 1.8rem;
+    font-weight: 600;
+    padding: 15px 0;
+    margin: 20px 0;
+    border-bottom: 3px solid #3498db;
+}
+
+.test-block {
+    margin: 15px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #2ecc71;
+}
+
+.test-content {
+    color: #2c3e50;
+    line-height: 1.6;
+}
+
+.test-content i {
+    color: #2ecc71;
+}
+
+.performance-block {
+    margin: 15px 0;
+    padding: 15px;
+    background: #fff3cd;
+    border-radius: 8px;
+    border-left: 4px solid #f1c40f;
+}
+
+.performance-content {
+    color: #2c3e50;
+    line-height: 1.6;
+}
+
+.performance-content i {
+    color: #f1c40f;
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="text-center mb-4">Conversion d'exigences en logiciels fonctionnels en JAVA avec LLM et agents intelligents</h1>
+            <form id="generatorForm" class="mb-4">
+                <div class="input-group">
+                    <input type="text" id="topic" class="form-control" 
+                           placeholder="Entrez votre sujet..." required>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-magic me-2"></i>Générer
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="progress-steps">
+            <span id="stepRequirements" class="step-badge">
+                <i class="fas fa-list-check me-2"></i>Exigences
+            </span>
+            <span id="stepPlanning" class="step-badge">
+                <i class="fas fa-sitemap me-2"></i>Planification
+            </span>
+            <span id="stepCode" class="step-badge">
+                <i class="fas fa-code me-2"></i>Code
+            </span>
+            <span id="stepTesting" class="step-badge">
+                <i class="fas fa-vial me-2"></i>Tests
+            </span>
+            <span id="stepDocumentation" class="step-badge">
+                <i class="fas fa-file-lines me-2"></i>Documentation
+            </span>
+        </div>
+
+        <div id="loading" class="loading">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-3" id="currentStep">Traitement en cours...</p>
+        </div>
+<!-- Section des exigences -->
+<div id="requirementsSection" class="step-container requirements">
+    <h2 class="section-title">
+        <i class="fas fa-list-check me-2"></i>Analyse des Exigences
+    </h2>
+    <div id="requirementsContent"></div>
+</div>
+
+<!-- Section de planification -->
+<div id="planningSection" class="step-container planning">
+    <h2 class="section-title">
+        <i class="fas fa-sitemap me-2"></i>Planification
+    </h2>
+    <div id="planningContent"></div>
+</div>
+
+<!-- Section de code -->
+<div id="codeSection" class="step-container code">
+    <h2 class="section-title">
+        <i class="fas fa-code me-2"></i>Code Généré
+    </h2>
+    <div id="codeContent"></div>
+</div>
+
+<!-- Section des tests -->
+<!-- <div id="testingSection" class="step-container testing">
+    <h2 class="section-title">
+        <i class="fas fa-vial me-2"></i>Résultats des Tests
+    </h2>
+    <div id="testingContent"></div>
+</div> -->
+<!-- Section des tests -->
+<div id="testingSection" class="step-container">
+    <h2 class="section-title">
+        <i class="fas fa-vial me-2"></i>Résultats des Tests
+    </h2>
+    <div id="testingContent" class="testing-container">
+        <!-- Le contenu sera injecté ici par JavaScript -->
+    </div>
+</div>
+        <!-- Section de documentation -->
+        <div id="documentationSection" class="step-container">
+            <h2 class="section-title">
+                <i class="fas fa-file-lines me-2"></i>Documentation
+            </h2>
+            <div class="documentation-section">
+                <div class="info-box">
+                    <i class="fas fa-info-circle me-2"></i>
+                    La documentation complète a été générée avec succès
+                </div>
+                <button id="downloadPdf" class="download-btn" style="display: none;">
+                    <i class="fas fa-file-pdf me-2"></i>Télécharger la Documentation PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+       document.getElementById('generatorForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const topic = document.getElementById('topic').value;
+    const loading = document.getElementById('loading');
+    const currentStep = document.getElementById('currentStep');
+    
+    // Réinitialiser l'interface
+    document.querySelectorAll('.step-container').forEach(container => {
+        container.style.display = 'none';
+    });
+    document.querySelectorAll('.step-badge').forEach(badge => {
+        badge.className = 'step-badge';
+    });
+    
+    loading.style.display = 'block';
+    
+    try {
+        const response = await fetch('/generate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: topic=${encodeURIComponent(topic)}
+        });
+        
+        const data = await response.json();
+        
+        if (data.status === 'completed') {
+            updateSection('requirements', data.data.requirements);
+            updateSection('planning', data.data.planning);
+            updateSection('code', data.data.code);
+            updateSection('testing', data.data.validation);
+            updateSection('documentation', null); // Pas besoin d'afficher le contenu
+            
+            document.getElementById('downloadPdf').style.display = 'block';
+            document.getElementById('downloadPdf').onclick = () => {
+                window.location.href = /download-pdf/${encodeURIComponent(topic)};
+            };
+
+            // Marquer toutes les étapes comme complétées
+            document.querySelectorAll('.step-badge').forEach(badge => {
+                badge.classList.add('active');
+            });
+        } else {
+            throw new Error(data.error || 'Une erreur est survenue');
+        }
+    } catch (error) {
+        showError(Erreur: ${error.message});
+    } finally {
+        loading.style.display = 'none';
+    }
+});
+
+function updateSection(sectionName, content) {
+    const section = document.getElementById(${sectionName}Section);
+    const contentDiv = document.getElementById(${sectionName}Content);
+    const badge = document.getElementById(step${sectionName.charAt(0).toUpperCase() + sectionName.slice(1)});
+    
+    if (sectionName === 'documentation') {
+        section.style.display = 'block';
+        badge.classList.add('active');
+        return;
+    }
+
+    if (content) {
+        if (sectionName === 'planning') {
+            contentDiv.innerHTML = formatPlanningContent(content);
+        } else if (sectionName === 'code') {
+            contentDiv.innerHTML = formatCodeContent(content);
+        } else if (sectionName === 'requirements') {
+            contentDiv.innerHTML = formatRequirementsContent(content);
+        } else if (sectionName === 'testing') {
+            contentDiv.innerHTML = formatTestingContent(content);
+        }
+        section.style.display = 'block';
+        badge.classList.add('active');
+    }
+}
+
+function formatRequirementsContent(content) {
+    if (typeof content === 'object') {
+        content = JSON.stringify(content, null, 2);
+    }
+
+    const sections = content.split('\n');
+    let html = '<div class="content-container">';
+    let currentTitle = '';
+
+    sections.forEach(section => {
+        if (section.includes(':')) {
+            const [title, text] = section.split(':');
+            if (text && text.trim()) {
+                // C'est un titre avec du contenu
+                html += `
+                    <div class="content-block">
+                        <h3 class="content-title">${escapeHtml(title.trim())}</h3>
+                        <div class="content-text">${escapeHtml(text.trim())}</div>
+                    </div>`;
+            } else {
+                // C'est un titre principal
+                currentTitle = title.trim();
+                html += <h2 class="main-title">${escapeHtml(currentTitle)}</h2>;
+            }
+        } else if (section.trim()) {
+            // C'est du contenu appartenant au titre précédent
+            html += <div class="content-text">${escapeHtml(section.trim())}</div>;
+        }
+    });
+
+    html += '</div>';
+    return html;
+}
+
+function formatCodeContent(content) {
+    return `
+        <div class="content-section">
+            <div class="code-section">
+                <pre><code>${escapeHtml(content)}</code></pre>
+            </div>
+        </div>`;
+}
+
+function formatTestingContent(content) {
+    if (typeof content === 'object') {
+        let html = '<div class="content-container">';
+
+        // Test Cases
+        if (content['Test Cases']) {
+            html += `
+                <h2 class="main-title">
+                    <i class="fas fa-vial me-2"></i>Tests Unitaires
+                </h2>`;
+            
+            const tests = content['Test Cases'].split('\n').filter(test => test.trim());
+            tests.forEach(test => {
+                html += `
+                    <div class="test-block">
+                        <div class="test-content">
+                            <i class="fas fa-check-circle me-2"></i>
+                            ${escapeHtml(test)}
+                        </div>
+                    </div>`;
+            });
+        }
+
+        // Performance Issues
+        if (content['Performance Issues']) {
+            html += `
+                <h2 class="main-title">
+                    <i class="fas fa-tachometer-alt me-2"></i>Performance
+                </h2>`;
+            
+            const issues = content['Performance Issues'].split('\n').filter(issue => issue.trim());
+            issues.forEach(issue => {
+                html += `
+                    <div class="performance-block">
+                        <div class="performance-content">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            ${escapeHtml(issue)}
+                        </div>
+                    </div>`;
+            });
+        }
+
+        html += '</div>';
+        return html;
+    }
+    return <div class="content-section">${escapeHtml(content)}</div>;
+}
+
+function formatPlanningContent(planningData) {
+    if (!planningData || planningData.error) {
+        return `<div class="alert alert-danger">
+            Erreur de formatage: ${planningData.error || 'Données invalides'}
+        </div>`;
+    }
+
+    return `
+        <div class="planning-container">
+            <div class="accordion" id="planningAccordion">
+                <!-- Classes -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" 
+                                data-bs-target="#classesContent">
+                            <i class="fas fa-cube me-2"></i>Classes du Système
+                        </button>
+                    </h2>
+                    <div id="classesContent" class="accordion-collapse collapse show">
+                        <div class="accordion-body">
+                            <div class="row">
+                                ${planningData.classes.map(classInfo => `
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card h-100">
+                                            <div class="card-header bg-primary text-white">
+                                                <i class="fas fa-cube me-2"></i>${classInfo.name}
+                                            </div>
+                                            <div class="card-body">
+                                                <h6 class="card-subtitle mb-2">
+                                                    <i class="fas fa-database me-2"></i>Attributs
+                                                </h6>
+                                                <ul class="list-group list-group-flush mb-3">
+                                                    ${classInfo.attributes.map(attr => `
+                                                        <li class="list-group-item">
+                                                            <i class="fas fa-circle-dot me-2"></i>${attr}
+                                                        </li>
+                                                    `).join('')}
+                                                </ul>
+                                                <h6 class="card-subtitle mb-2">
+                                                    <i class="fas fa-code me-2"></i>Méthodes
+                                                </h6>
+                                                <ul class="list-group list-group-flush">
+                                                    ${classInfo.methods.map(method => `
+                                                        <li class="list-group-item">
+                                                            <i class="fas fa-gear me-2"></i>${method}
+                                                        </li>
+                                                    `).join('')}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Relations -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                data-bs-target="#relationshipsContent">
+                            <i class="fas fa-project-diagram me-2"></i>Relations entre Classes
+                        </button>
+                    </h2>
+                    <div id="relationshipsContent" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            <ul class="list-group">
+                                ${planningData.relationships.map(relation => `
+                                    <li class="list-group-item">
+                                        <i class="fas fa-link me-2"></i>${relation}
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Considérations -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                data-bs-target="#considerationsContent">
+                            <i class="fas fa-lightbulb me-2"></i>Considérations Techniques
+                        </button>
+                    </h2>
+                    <div id="considerationsContent" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            <div class="row">
+                                ${planningData.considerations.map((consideration, index) => `
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card h-100">
+                                            <div class="card-header bg-info text-white">
+                                                <i class="fas fa-info-circle me-2"></i>Considération ${index + 1}
+                                            </div>
+                                            <div class="card-body">
+                                                <p class="card-text">${consideration}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function escapeHtml(unsafe) {
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function showError(message) {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.innerHTML = <i class="fas fa-exclamation-circle me-2"></i>${message};
+    document.querySelector('.container').appendChild(errorDiv);
+    setTimeout(() => errorDiv.remove(), 5000);
+}
+
+function updateStepStatus(step) {
+    document.getElementById('currentStep').textContent = 
+        ${step.charAt(0).toUpperCase() + step.slice(1)} en cours...;
+    
+    const stepId = step${step.charAt(0).toUpperCase() + step.slice(1)};
+    document.querySelectorAll('.step-badge').forEach(badge => {
+        if (badge.id === stepId) {
+            badge.classList.add('active');
+        } else {
+            badge.classList.remove('active');
+        }
+    });
+}
+    </script>
+</body>
+</html>

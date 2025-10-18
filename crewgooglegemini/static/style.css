@@ -1,0 +1,813 @@
+/* Reset et base */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif; /* Utilisation d'une police simple */
+    line-height: 1.6;
+    background-color: var(--light-color); /* Couleur de secours si l'image ne charge pas */
+    color: var(--dark-color);
+    transition: all 0.3s ease;
+}
+
+body.dark-mode {
+    background-color: var(--dark-color);
+    color: var(--light-color);
+}
+
+/* Styles pour l'image de fond */
+.background-container {
+    /* Remplacez 'background.jpg' par le nom de votre fichier image si différent */
+    /* Assurez-vous que l'image est placée dans le dossier 'static' */
+    background-image: url('backround.jpg'); 
+    background-size: cover; /* Couvre toute la zone */
+    background-position: center center; /* Centre l'image */
+    background-attachment: fixed; /* Fixe l'image pendant le défilement */
+    min-height: 100vh; /* S'assure qu'il y a au moins 100% de la hauteur de la fenêtre */
+    padding: 20px 0; /* Ajoute un peu d'espace en haut et en bas */
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 15px; /* Ajoute un padding sur les côtés pour les petits écrans */
+}
+
+/* Amélioration des styles existants */
+:root {
+    --primary-color: #0d6efd;
+    --secondary-color: #6c757d;
+    --success-color: #198754;
+    --info-color: #0dcaf0;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+    --card-bg-light: #ffffff; /* Fond des cartes en mode clair */
+    --card-bg-dark: #343a40; /* Fond des cartes en mode sombre */
+}
+
+body.dark-mode .content-section,
+body.dark-mode .planning-container .card,
+body.dark-mode .requirement-group,
+body.dark-mode .test-group,
+body.dark-mode .progress-steps,
+body.dark-mode .step-container,
+body.dark-mode .info-box,
+body.dark-mode .warning-box,
+body.dark-mode .content-container {
+    background-color: var(--card-bg-dark);
+    color: var(--light-color);
+}
+
+body.dark-mode .header {
+     background-color: var(--card-bg-dark);
+}
+
+body.dark-mode .step-badge {
+    background-color: var(--secondary-color);
+    color: var(--dark-color);
+}
+
+body.dark-mode .step-badge.active,
+body.dark-mode .step-badge.completed {
+     background-color: var(--primary-color);
+     color: white;
+}
+
+
+.header {
+    background-color: var(--card-bg-light);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+}
+
+.header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--info-color));
+}
+
+.theme-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    color: var(--dark-color); /* Couleur de l'icône */
+}
+
+body.dark-mode .theme-toggle {
+    color: var(--light-color); /* Couleur de l'icône en mode sombre */
+}
+
+
+.theme-toggle:hover {
+    transform: rotate(180deg);
+}
+
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: var(--card-bg-light);
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.progress-bar-container { /* Ajouté pour une barre de progression visuelle */
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background-color: #e9ecef; /* Couleur de la barre inactive */
+    transform: translateY(-50%);
+    z-index: 0;
+    margin: 0 20px; /* Réduit la largeur pour éviter les chevauchements */
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--info-color));
+    width: 0; /* Sera mis à jour par JS */
+    transition: width 0.5s ease;
+}
+
+
+.step-badge {
+    position: relative;
+    z-index: 1;
+    padding: 10px 15px; /* Ajustement padding */
+    border-radius: 20px; /* Ajustement border-radius */
+    background-color: #e9ecef; /* Couleur par défaut */
+    color: var(--secondary-color);
+    font-size: 0.85rem; /* Ajustement font-size */
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Ajustement gap */
+    flex-direction: column; /* Affichage vertical */
+    text-align: center;
+}
+
+.step-badge i {
+    font-size: 1.3rem; /* Ajustement taille icône */
+    margin-bottom: 5px;
+}
+
+.step-badge.active {
+    background-color: var(--primary-color);
+    color: white;
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(13, 110, 253, 0.2);
+}
+
+.step-badge.completed {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.content-section {
+    background-color: var(--card-bg-light);
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.content-section:hover {
+    transform: translateY(-5px);
+}
+
+.section-title {
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 3px solid var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.step-container {
+    display: none; /* Masqué par défaut, sera affiché par JS */
+    margin: 20px 0;
+    padding: 0; /* Le padding sera dans .content-section */
+    background-color: transparent; /* Transparent pour ne pas cacher l'arrière-plan du .content-section */
+    box-shadow: none; /* Pas d'ombre ici */
+}
+
+
+.loading {
+    display: none;
+    text-align: center;
+    padding: 40px;
+    background-color: var(--card-bg-light); /* Fond blanc pour la section de chargement */
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-bottom: 25px;
+}
+body.dark-mode .loading {
+     background-color: var(--card-bg-dark);
+}
+
+
+/* Styles pour le formatage de la planification */
+.planning-container {
+    margin-top: 0; /* Retiré car padding est dans .content-section */
+}
+
+.planning-container .accordion-item {
+    border: 1px solid rgba(0,0,0,.125); /* Bordure Bootstrap */
+    margin-bottom: 10px; /* Espace entre les items */
+    border-radius: 0.25rem; /* Bordure arrondie Bootstrap */
+}
+
+.planning-container .accordion-button {
+    background-color: #e9ecef; /* Couleur de fond du bouton */
+    color: var(--dark-color);
+    font-weight: bold;
+}
+
+body.dark-mode .planning-container .accordion-button {
+     background-color: var(--secondary-color);
+     color: var(--light-color);
+}
+
+
+.planning-container .accordion-button:not(.collapsed) {
+    color: var(--primary-color);
+    background-color: #cfe2ff; /* Couleur de fond Bootstrap active */
+}
+body.dark-mode .planning-container .accordion-button:not(.collapsed) {
+     color: var(--dark-color);
+     background-color: var(--primary-color);
+}
+
+
+.planning-container .accordion-body {
+    padding: 1rem 1.25rem; /* Padding Bootstrap par défaut */
+}
+
+.planning-container .card {
+    box-shadow: none; /* Pas d'ombre sur les cartes internes */
+    transition: none; /* Pas de transition sur les cartes internes */
+    margin-bottom: 20px;
+    border: 1px solid rgba(0,0,0,.125); /* Bordure Bootstrap */
+}
+
+.planning-container .card:hover {
+    transform: none;
+}
+
+.planning-container .card-header {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: bold;
+    padding: 0.75rem 1.25rem; /* Padding Bootstrap */
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+
+.planning-container .list-group-item {
+    border: none; /* Retiré les bordures */
+    margin-bottom: 0; /* Retiré les marges */
+    background-color: var(--light-color);
+    border-bottom: 1px solid rgba(0,0,0,.125); /* Ajout d'une bordure fine en bas */
+    padding: 0.5rem 1.25rem; /* Padding Bootstrap */
+}
+body.dark-mode .planning-container .list-group-item {
+     background-color: var(--dark-color);
+     color: var(--light-color);
+     border-bottom-color: var(--secondary-color);
+}
+
+
+.planning-container h6.card-subtitle {
+    color: var(--secondary-color); /* Couleur Bootstrap */
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem; /* Marge Bootstrap */
+}
+
+
+/* Styles pour les messages d'erreur */
+.error-message {
+    background-color: var(--danger-color);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 20px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Styles pour les sections de contenu */
+.content-container {
+    padding: 20px;
+    background: var(--card-bg-light);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.main-title {
+    color: var(--dark-color);
+    font-size: 1.8rem;
+    font-weight: 600;
+    padding: 15px 0;
+    margin: 20px 0;
+    border-bottom: 3px solid var(--primary-color);
+}
+body.dark-mode .main-title {
+     color: var(--light-color);
+     border-bottom-color: var(--info-color);
+}
+
+
+.content-block {
+    margin: 20px 0;
+    padding: 15px;
+    background: var(--light-color);
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-color);
+}
+body.dark-mode .content-block {
+     background: var(--secondary-color);
+     border-left-color: var(--info-color);
+}
+
+
+.content-title {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+body.dark-mode .content-title {
+     color: var(--info-color);
+}
+
+.content-text {
+    color: var(--dark-color);
+    line-height: 1.6;
+    margin: 10px 0;
+    padding: 10px;
+    background: var(--card-bg-light);
+    border-radius: 6px;
+}
+body.dark-mode .content-text {
+     background: var(--card-bg-dark);
+     color: var(--light-color);
+}
+
+
+/* Styles spécifiques pour chaque type d'agent */
+.requirements .main-title {
+    border-color: var(--danger-color);
+    color: var(--danger-color);
+}
+
+.planning .main-title {
+    border-color: var(--success-color);
+    color: var(--success-color);
+}
+
+.code .main-title,
+.fixedCode .main-title { /* Ajout de fixedCode */
+    border-color: #9b59b6; /* Couleur personnalisée */
+    color: #8e44ad; /* Couleur personnalisée */
+}
+
+.testing .main-title {
+    border-color: var(--warning-color);
+    color: var(--warning-color);
+}
+
+.documentation .main-title {
+    border-color: var(--info-color);
+    color: var(--info-color);
+}
+
+
+/* Styles pour les blocs de code */
+.code-section {
+    background-color: #2d2d2d; /* Couleur de fond sombre pour le code */
+    color: #cccccc; /* Couleur du texte clair */
+    padding: 20px;
+    border-radius: 8px;
+    overflow-x: auto; /* Ajout du défilement horizontal si nécessaire */
+}
+
+/* Styles pour les éléments spécifiques (méthodes, etc.) */
+.method-block { /* Ressemble à .content-block */
+    background: var(--light-color);
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 6px;
+    border-left: 4px solid var(--primary-color);
+}
+body.dark-mode .method-block {
+     background: var(--secondary-color);
+     border-left-color: var(--info-color);
+}
+
+.class-name {
+    color: var(--success-color);
+    font-weight: 600;
+}
+
+.method-name {
+    color: #9b59b6; /* Couleur personnalisée */
+    font-weight: 500;
+}
+
+.parameter {
+    color: var(--danger-color);
+}
+
+.return-type {
+    color: var(--warning-color);
+}
+
+/* Styles pour les tests */
+.test-block { /* Similaire à .content-block */
+    margin: 15px 0;
+    padding: 15px;
+    background: var(--light-color);
+    border-radius: 8px;
+    border-left: 4px solid var(--success-color);
+}
+body.dark-mode .test-block {
+     background: var(--secondary-color);
+     border-left-color: var(--success-color);
+}
+
+
+.test-content {
+    color: var(--dark-color);
+    line-height: 1.6;
+}
+body.dark-mode .test-content {
+     color: var(--light-color);
+}
+
+.test-content i {
+    color: var(--success-color);
+}
+
+.performance-block { /* Similaire à .warning-box */
+    margin: 15px 0;
+    padding: 15px;
+    background: #fff3cd; /* Couleur Bootstrap warning light */
+    border-radius: 8px;
+    border-left: 4px solid var(--warning-color);
+}
+
+.performance-content {
+    color: var(--dark-color); /* Texte sombre */
+    line-height: 1.6;
+}
+
+.performance-content i {
+    color: var(--warning-color);
+}
+
+/* Styles pour les sections d'information et d'avertissement */
+.info-box {
+    background-color: #e7f5ff; /* Couleur Bootstrap info light */
+    border-left: 4px solid var(--info-color);
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    color: var(--dark-color);
+}
+
+.warning-box {
+    background-color: #fff3cd; /* Couleur Bootstrap warning light */
+    border-left: 4px solid var(--warning-color);
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    color: var(--dark-color);
+}
+body.dark-mode .info-box,
+body.dark-mode .warning-box {
+     background-color: var(--secondary-color);
+     color: var(--light-color);
+     border-left-color: var(--info-color); /* ou warning-color */
+}
+
+
+/* Styles pour la section documentation */
+.documentation-section {
+    text-align: center;
+    padding: 40px;
+    background-color: var(--card-bg-light); /* Fond blanc */
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+body.dark-mode .documentation-section {
+     background-color: var(--card-bg-dark);
+}
+
+
+.download-btn {
+    display: inline-block;
+    padding: 15px 30px;
+    background-color: var(--success-color);
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s;
+    margin-top: 20px;
+    border: none;
+    cursor: pointer;
+}
+
+.download-btn:hover {
+    background-color: #218838; /* Vert plus foncé */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    color: white;
+    text-decoration: none;
+}
+
+
+/* Animation pour les chevrons de l'accordéon */
+.accordion-button:not(.collapsed) .fa-chevron-down {
+    transform: rotate(180deg);
+}
+
+.fa-chevron-down {
+    transition: transform 0.3s ease;
+}
+
+
+/* Styles pour la coloration syntaxique (Prism.js) */
+pre[class*="language-"],
+code[class*="language-"] {
+    background: none !important; /* S'assurer que Prism n'écrase pas le fond du .code-section */
+    font-size: 0.9em;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+    tab-size: 4;
+    hyphens: none;
+}
+
+/* Ajoutez ici des ajustements pour les thèmes Prism si nécessaire */
+
+/* Utilitaires Bootstrap personnalisés (optionnel) */
+.text-primary { color: var(--primary-color) !important; }
+.text-secondary { color: var(--secondary-color) !important; }
+.text-success { color: var(--success-color) !important; }
+.text-info { color: var(--info-color) !important; }
+.text-warning { color: var(--warning-color) !important; }
+.text-danger { color: var(--danger-color) !important; }
+.bg-primary { background-color: var(--primary-color) !important; }
+/* etc. pour d'autres utilitaires si vous voulez plus de contrôle */
+
+/* Styles pour la section explicative */
+.explanation-section {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 30px;
+    margin: 30px 0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    backdrop-filter: blur(10px);
+}
+
+.explanation-content {
+    padding: 20px;
+}
+
+.explanation-content h3 {
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.explanation-content p {
+    color: var(--dark-color);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.explanation-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.explanation-content ul li {
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: var(--dark-color);
+    display: flex;
+    align-items: center;
+}
+
+.explanation-content ul li i {
+    color: var(--success-color);
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
+.explanation-image {
+    padding: 20px;
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.explanation-image img {
+    width: 250px;
+    height: 250px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+    object-fit: cover;
+}
+
+.explanation-image img:hover {
+    transform: scale(1.02);
+}
+
+/* Styles pour le mode sombre */
+body.dark-mode .explanation-section {
+    background: rgba(33, 37, 41, 0.95);
+}
+
+body.dark-mode .explanation-content h3 {
+    color: var(--info-color);
+}
+
+body.dark-mode .explanation-content p,
+body.dark-mode .explanation-content ul li {
+    color: var(--light-color);
+}
+
+.requirement-title {
+    color: #2c3e50;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 1.5rem 0 1rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #3498db;
+}
+
+.requirement-subtitle {
+    color: #34495e;
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin: 1rem 0;
+    padding-left: 1rem;
+    border-left: 3px solid #e74c3c;
+}
+
+.requirement-text {
+    color: #2c3e50;
+    line-height: 1.6;
+    margin: 0.8rem 0;
+    padding: 0.5rem 1rem;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.requirement-text strong {
+    color: #e74c3c;
+    font-weight: 600;
+}
+
+.content-text {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.requirements-title {
+    color: #2c3e50;
+    border-bottom: 3px solid #3498db;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Animation pour les nouveaux éléments */
+.requirement-title, .requirement-subtitle, .requirement-text {
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Style pour les listes */
+.requirement-text ul {
+    list-style-type: none;
+    padding-left: 1.5rem;
+}
+
+.requirement-text li {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.requirement-text li:before {
+    content: "•";
+    color: #3498db;
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+}
+
+/* Style pour les blocs de code */
+.requirement-text pre {
+    background: #2c3e50;
+    color: #ecf0f1;
+    padding: 1rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+/* Style pour les citations */
+.requirement-text blockquote {
+    border-left: 4px solid #3498db;
+    margin: 1rem 0;
+    padding: 0.5rem 1rem;
+    background: #f8f9fa;
+    font-style: italic;
+    color: #34495e;
+}
+
+.requirement-item, .planning-item {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 10px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.requirement-subtitle, .planning-subtitle {
+    color: #2c3e50;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin: 15px 0 10px 0;
+    padding: 5px 0;
+    border-bottom: 2px solid #3498db;
+}
+
+.requirement-title, .planning-title {
+    color: #2c3e50;
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 20px 0 15px 0;
+    padding: 10px 0;
+    border-bottom: 3px solid #3498db;
+}
+
+.requirement-text, .planning-text {
+    color: #2c3e50;
+    line-height: 1.6;
+    margin: 10px 0;
+    padding: 10px;
+    background: white;
+    border-radius: 6px;
+}
+
+.requirement-item i, .planning-item i {
+    color: #3498db;
+    margin-top: 3px;
+}
