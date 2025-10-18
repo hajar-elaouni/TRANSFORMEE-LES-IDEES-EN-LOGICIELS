@@ -163,7 +163,7 @@ class WebSearchTool(BaseTool):
             })
             
             headers = {
-                'X-API-KEY': "8f46b5f0d445d0801087380e98965e756667f725",  # Obtenir la clé depuis les variables d'environnement
+                'X-API-KEY': "cle api ",  # Obtenir la clé depuis les variables d'environnement
                 'Content-Type': 'application/json'
             }
             
